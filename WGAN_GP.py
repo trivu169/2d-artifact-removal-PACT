@@ -251,14 +251,14 @@ class WGAN():
                 c = Dropout(dropout)(c)
             c = Activation('relu')(c)
             # c = LeakyReLU()(c)
-            c = BatchNormalization(momentum=0.8)(c)
+            c = BatchNormalization()(c)
             c = Conv2D(filters, kernel_size=3, strides=1, padding='same')(c)
             # Use dropout as in this report http://cs230.stanford.edu/files_winter_2018/projects/6937642.pdf and pix2pix paper
             if dropout > 0 and concat_layer is not None:
                 c = Dropout(dropout)(c)
-            # c = LeakyReLU()(c)
+            c = LeakyReLU()(c)
             c = Activation('relu')(c)
-            c = BatchNormalization(momentum=0.8)(c)
+            # c = BatchNormalization()(c)
             # if dropout > 0:
             #     c = Dropout(dropout)(c)
 
