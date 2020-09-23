@@ -42,14 +42,12 @@ IMG_SIZE = 256
 SAVE_MODEL_PATH = "./model/"
 SAVE_MODEL_NAME = MODEL + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") # + ".h5"
 SAVE_MODEL_PATH = SAVE_MODEL_PATH+SAVE_MODEL_NAME
-# LOAD_MODEL_PATH = "./trained model/SRGAN_PACT_SRUnet_nne_20181102-163119/epoch24/generator.h5"
 MODEL_NAME = 'wgan-gp20200511-135418'
 LOAD_MODEL_PATH = './model/' + MODEL_NAME + '/trained model/epoch59/generator.h5'
 CONT_MODEL_NAME = None
 CONT_EPOCH = 50
 TEST_INDEX = 10
 PREDICT_IMG_PATH = PATH+PREFIX+str(TEST_INDEX)+SUFFIX
-# PREDICT_IMG_PATH = "D:/OneDrive - Duke University/PI Lab/Limited-View DL/Needed results/phantom.mat"
 # TEST_INDEX = "phantom" # Use number for simulated data
 HR = False
 
