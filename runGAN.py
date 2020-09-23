@@ -29,25 +29,25 @@ else:
 """Initialize params"""
 
 MODEL = 'wgan-gp'
-PREFIX = "homo_2D_nne_"
-# PREFIX = "homo_2D_disc_"
-PATH = "../Data Generation/2D homo nne dir filtered rotated/"
-# PATH = "../Data Generation/2D homo disc BL lr/"
+# PREFIX = "homo_2D_nne_"
+PREFIX = "homo_2D_disc_"
+# PATH = "../Data Generation/2D homo nne dir filtered rotated/"
+PATH = "../Data Generation/2D homo disc BL lr/"
 SUFFIX = ".mat"
-EPOCH = 50
+EPOCH = 100
 SAVE_LOG = True
 SAVE_IMG = True
-N = 7200
+N = 4000
 IMG_SIZE = 256
 SAVE_MODEL_PATH = "./model/"
 SAVE_MODEL_NAME = MODEL + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") # + ".h5"
 SAVE_MODEL_PATH = SAVE_MODEL_PATH+SAVE_MODEL_NAME
 # LOAD_MODEL_PATH = "./trained model/SRGAN_PACT_SRUnet_nne_20181102-163119/epoch24/generator.h5"
-MODEL_NAME = 'wgan-gp20191206-180754'
-LOAD_MODEL_PATH = './model/' + MODEL_NAME + '/trained model/epoch49/generator.h5'
+MODEL_NAME = 'wgan-gp20200511-135418'
+LOAD_MODEL_PATH = './model/' + MODEL_NAME + '/trained model/epoch59/generator.h5'
 CONT_MODEL_NAME = None
 CONT_EPOCH = 50
-TEST_INDEX = 7353
+TEST_INDEX = 10
 PREDICT_IMG_PATH = PATH+PREFIX+str(TEST_INDEX)+SUFFIX
 # PREDICT_IMG_PATH = "D:/OneDrive - Duke University/PI Lab/Limited-View DL/Needed results/phantom.mat"
 # TEST_INDEX = "phantom" # Use number for simulated data
@@ -62,30 +62,27 @@ HR = False
     - LEARNING_CURVE: plot the SSIM wrt to increased training size
 """
 
-TRAIN_FLAG = True
+TRAIN_FLAG = False
 
 SAMPLE_INTERVAL = 10
 BATCH_SIZE = 5
 
 TEST_FLAG = False
 EVAL_FLAG = False
-INVIVO_FLAG = False
+INVIVO_FLAG = True
 PLOT_FLAG = False
 LEARNING_CURVE = False
 
-# INVIVO_PATH = '../Invitro Results/Tube Data/z.mat'
-# INVIVO_PATH = 'D:/Lab Members/Tree Vu/OneDrive - Duke University/PI Lab/HIFU PA/100619/exp2Rcv_Rec_DL'
-# INVIVO_PATH = 'D:/Lab Members/Tree Vu/OneDrive - Duke University/PI Lab/HIFU PA/032120/ch2PAhifu_rcv_Rec_DL'
-INVIVO_PATH = '../Invivo Results/SW2_TVRec_DL'
-# INVIVO_PATH = '../Invitro Results/Phantomdata_raw/po11_TVRec_DL'
+INVIVO_PATH = './'
+INVIVO_NAME = 'pa_3D_2'  # Name of the variable corresponding to the image matrix
 # CONT_TRAIN_FLAG = False
 
-EVAL_IMG_PATH = "../Data Generation/2D homo nne dir filtered rotated/homo_2D_nne_"
-# EVAL_IMG_PATH = "../Data Generation/2D homo disc BL lr/homo_2D_disc_"
+# EVAL_IMG_PATH = "../Data Generation/2D homo nne dir filtered rotated/homo_2D_nne_"
+EVAL_IMG_PATH = "./2D homo disc BL lr/homo_2D_disc_"
 # VALIDATION_RANGE = [7201, 9000]
 VALIDATION_RANGE = [4501, 5000]
 
-PLOT_PATH = "D:/OneDrive - Duke University/PI Lab/Limited-View DL/Main Project/logs/PINet_BLdisc_112518"
+PLOT_PATH = "./"
 
 """ Execution for each options """
 if TRAIN_FLAG:
@@ -112,7 +109,7 @@ if TRAIN_FLAG:
     # Create README for the model
     if CONT_MODEL_NAME is not None:
         f = open(SAVE_MODEL_PATH + '\README_cont.md', "w+")
-        f.write('Load model from: ' + CONT_MODEL_NAME + '\n')
+        f.write('Continue model from: ' + CONT_MODEL_NAME + '\n')
     else:
         f = open(SAVE_MODEL_PATH + '\README.md', 'w+')
     f.write('MODEL INFORMATION:\n')
@@ -177,10 +174,6 @@ if TEST_FLAG:
     get_path = get_path[0]
     sio.savemat(get_path+'/'+PREFIX+str(TEST_INDEX), dict([('p0_out', pred), ('p0_recon', arti.reshape([256, 256])),
                                                        ('p0_true', ground_truth), ('model', LOAD_MODEL_PATH)]))
-    # sio.savemat('PI_NET_BLdisc_nne_20181124-100037-36_'+str(TEST_INDEX)+'.mat',
-    #             dict([('p0_out', pred), ('p0_recon', arti.reshape([128, 128])), ('p0_hr', data['p0_hr'])]))
-    # sio.savemat('PINet_20181102-163119-24_nne_stack_'+str(TEST_INDEX)+'.mat', dict([('p0_out', pred), ('p0_recon', arti.reshape([128,128])),
-    #                                                             ('p0_hr', data['p0_hr'])]))
 
 def getResults(data, model):
     if HR == False:
@@ -237,9 +230,7 @@ if EVAL_FLAG:
 if INVIVO_FLAG:
     model = load_model(LOAD_MODEL_PATH)
     data = sio.loadmat(INVIVO_PATH)
-    # arti = data['p0_reconstest']
-    # arti = data['tr_hilbert']
-    arti = data['pa_3D_TV']
+    arti = data[INVIVO_NAME]
     # arti = arti-arti.min()
     # arti = arti/arti.max()
     # arti = (arti-arti.min())/(arti.max()-arti.min())
@@ -290,15 +281,15 @@ if INVIVO_FLAG:
     sio.savemat(get_path + '/' + invivo_name + '_' + MODEL_NAME,
                 dict([('p0_TR', arti),
                       ('p0_recon', recon),
-                      ('x_img0', data['x_img0']),
-                      ('z_img0', data['z_img0']),
+                      # ('x_img0', data['x_img0']),
+                      # ('z_img0', data['z_img0']),
                       ('model', LOAD_MODEL_PATH)]))
     # sio.savemat('RA4paaReconPINet_20181102-163119-24_test.mat', dict([('p0_SRUNet', recon)]))
     fig = plt.figure()
     ax = fig.add_subplot(1, 2, 1)
-    plt.imshow(np.squeeze(recon[:, :, 20]))
+    plt.imshow(np.squeeze(recon[:, :, 10]))
     ax = fig.add_subplot(1, 2, 2)
-    plt.imshow(np.squeeze(arti[:, :, 20]))
+    plt.imshow(np.squeeze(arti[:, :, 10]))
     plt.show()
 
 if PLOT_FLAG:
