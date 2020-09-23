@@ -71,8 +71,8 @@ INVIVO_FLAG = True
 PLOT_FLAG = False
 LEARNING_CURVE = False
 
-INVIVO_PATH = './'
-INVIVO_NAME = 'pa_3D_2'  # Name of the variable corresponding to the image matrix
+INVIVO_PATH = './'  # path to the experimental data, INCLUDING the data name itself
+INVIVO_NAME = 'pa_3D_2'  # Name of the variable in the mat file corresponding to the image matrix, NOT the data name
 # CONT_TRAIN_FLAG = False
 
 # EVAL_IMG_PATH = "../Data Generation/2D homo nne dir filtered rotated/homo_2D_nne_"
